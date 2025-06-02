@@ -3,6 +3,7 @@ cmake_policy(SET CMP0074 NEW)
 
 project(Xcompact3d LANGUAGES Fortran)
 set(version 5.0)
+find_package(adios2 REQUIRED COMPONENTS fortran fortran_mpi)
 if (IO_BACKEND MATCHES "adios2")
   # Can be useful to also activate CXX, sometimes is needed by packages
   enable_language(C CXX)
