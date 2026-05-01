@@ -104,6 +104,8 @@ contains
     call decomp_2d_register_variable(io_name, "uy", 1, 0, output2D, mytype)
     call decomp_2d_register_variable(io_name, "uz", 1, 0, output2D, mytype)
     call decomp_2d_register_variable(io_name, "pp", 1, 0, output2D, mytype)
+    call decomp_2d_register_variable(io_name, "dpdt", 1, 0, output2D, mytype)
+    call decomp_2d_register_variable(io_name, "d2pdt2", 1, 0, output2D, mytype)
     if (ilmn) then
        call decomp_2d_register_variable(io_name, "rho", 1, 0, output2D, mytype)
     endif
@@ -208,6 +210,7 @@ contains
     use decomp_2d_io, only : decomp_2d_start_io
 
     use param, only : nrhotime, ilmn, iscalar, ioutput, irestart, istret, dy
+    use param, only : dt
 
     use variables, only : sx, cifip6, cisip6, ciwip6, cifx6, cisx6, ciwx6
     use variables, only : sy, cifip6y, cisip6y, ciwip6y, cify6, cisy6, ciwy6
@@ -220,6 +223,8 @@ contains
     use var, only : npress
 
     use tools, only : rescale_pressure
+
+    use time_derivatives, only : tderiv_push_pressure
 
     implicit none
 
@@ -291,6 +296,10 @@ contains
 
     ! Rescale pressure
     call rescale_pressure(ta1)
+
+    ! 4th-order centered time-derivative diagnostic (writes dpdt_*/d2pdt2_*
+    ! lagged by 2 snapshots once the 5-point buffer is full)
+    call tderiv_push_pressure(ta1, itime, real(ioutput, mytype)*dt)
 
     ! Write pressure
     call write_field(ta1, ".", "pp", num, .true., flush=.true.)

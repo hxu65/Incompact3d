@@ -136,6 +136,7 @@ subroutine init_xcompact3d()
   use turbine, only: init_turbines
 
   use visu, only : visu_init, visu_ready
+  use time_derivatives, only : tderiv_init
 
   use genepsi, only : genepsi3d, epsi_init
   use ibm, only : body
@@ -245,6 +246,7 @@ subroutine init_xcompact3d()
      call visu_case_init() !! XXX: If you get error about uninitialised IO, look here.
                            !! Ensures additional case-specific variables declared for IO
      call visu_ready()
+     call tderiv_init()
   end if
   ! compute diffusion number of simulation
   call compute_cfldiff()
@@ -322,6 +324,7 @@ subroutine finalise_xcompact3d()
   use param, only : itype, jles, ilesmod, mhd_active
   use probes, only : finalize_probes
   use visu, only : visu_finalise
+  use time_derivatives, only : tderiv_finalise
   use les, only: finalise_explicit_les
   use mhd, only: mhd_fin
   use case, only: visu_case_finalise
@@ -356,6 +359,7 @@ subroutine finalise_xcompact3d()
   call finalize_probes()
   call visu_case_finalise()
   call visu_finalise()
+  call tderiv_finalise()
   if (mhd_active) call mhd_fin()
   if (ilesmod.ne.0) then
      if (jles.gt.0) call finalise_explicit_les()

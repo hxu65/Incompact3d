@@ -50,6 +50,7 @@ add_executable(xcompact3d
                     schemes.f90
                     statistics.f90
 		    stretching.f90
+                    time_derivatives.f90
                     time_integrators.f90
                     tools.f90
                     transeq.f90
